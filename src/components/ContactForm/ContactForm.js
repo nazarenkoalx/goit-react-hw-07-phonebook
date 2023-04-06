@@ -4,10 +4,9 @@ import { Form, SubmitButton } from './ContactForm.styled';
 import { object, string } from 'yup';
 import { Section } from 'components/Section/Section.styled';
 import { useDispatch, useSelector } from 'react-redux';
-import { addContact } from 'redux/contactSlice';
+import { addContact } from 'redux/operations';
 import { getContacts } from 'redux/selectors';
 import { notifyError, notifySuccess } from 'services/notifications';
-// import { toast } from 'react-toastify';
 
 let ContactsSchema = object({
   name: string()
@@ -23,11 +22,11 @@ export const ContactForm = () => {
   const contacts = useSelector(getContacts);
 
   const handleFormSubmit = ({ name, number }) => {
-    const doubleName = contacts.find(contact => {
+    const doubleName = contacts.contactsArr.find(contact => {
       return contact.name === name;
     });
 
-    const doubleNumber = contacts.find(contact => {
+    const doubleNumber = contacts.contactsArr.find(contact => {
       return contact.number === number;
     });
 
