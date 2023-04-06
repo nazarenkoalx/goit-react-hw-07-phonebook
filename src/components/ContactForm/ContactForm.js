@@ -5,7 +5,7 @@ import { object, string } from 'yup';
 import { Section } from 'components/Section/Section.styled';
 import { useDispatch, useSelector } from 'react-redux';
 import { addContact } from 'redux/operations';
-import { getContacts } from 'redux/selectors';
+import { selectContacts } from 'redux/selectors';
 import { notifyError, notifySuccess } from 'services/notifications';
 
 let ContactsSchema = object({
@@ -19,7 +19,7 @@ let ContactsSchema = object({
 // .length(10, 'type 10 digits of phone number')
 export const ContactForm = () => {
   const dispatch = useDispatch();
-  const contacts = useSelector(getContacts);
+  const contacts = useSelector(selectContacts);
 
   const handleFormSubmit = ({ name, number }) => {
     const doubleName = contacts.contactsArr.find(contact => {

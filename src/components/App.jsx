@@ -1,18 +1,19 @@
-import { ContactForm } from './ContactForm/ContactForm';
-import { ContactList } from './ContactList/ContactList';
-import { Filter } from './Filter/Filter';
-import { Container } from './Container/Container.styled';
-import { ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 import { useEffect } from 'react';
+import { ContactList } from './ContactList/ContactList';
+import 'react-toastify/dist/ReactToastify.css';
+import { selectContacts, selectVisibleContacts } from 'redux/selectors';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchContacts } from 'redux/operations';
-import { getContacts } from 'redux/selectors';
+import { ToastContainer } from 'react-toastify';
+import { Filter } from './Filter/Filter';
+import { Container } from './Container/Container.styled';
+import { ContactForm } from './ContactForm/ContactForm';
+import { Loading } from './Loading/Loading';
 
 export function App() {
   const dispatch = useDispatch();
-
-  const { contactsArr, isLoading, error } = useSelector(getContacts);
+  const { isLoading, error } = useSelector(selectContacts);
+  const visibleContacts = useSelector(selectVisibleContacts);
 
   useEffect(() => {
     dispatch(fetchContacts());
@@ -20,10 +21,10 @@ export function App() {
   return (
     <>
       <Container>
-        {isLoading && <div>PLEASE WAIT</div>}
+        {isLoading && <Loading />}
         <ContactForm />
         <Filter />
-        {contactsArr.length > 0 ? (
+        {visibleContacts.length > 0 ? (
           <ContactList />
         ) : (
           <div>your cont list is empty</div>
