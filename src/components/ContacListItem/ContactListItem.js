@@ -1,12 +1,14 @@
 import { useDispatch } from 'react-redux';
 import { deleteContact } from 'redux/operations';
 import PropTypes from 'prop-types';
+import { notifyWarn } from 'services/notifications';
 
 export const ContactListItem = ({ contact }) => {
   const { id, name, number } = contact;
   const dispatch = useDispatch();
   const handleDeleteContacts = () => {
     dispatch(deleteContact(id));
+    notifyWarn(`You successfully deleted ${name} contact`);
   };
 
   return (

@@ -25,3 +25,16 @@ export const notifySuccess = string => {
     theme: 'dark',
   });
 };
+
+export const notifyWarn = string => {
+  return toast.warn(`${string}`, {
+    position: 'top-right',
+    autoClose: 3000,
+    hideProgressBar: false,
+    closeOnClick: true,
+    pauseOnHover: true,
+    draggable: true,
+    progress: undefined,
+    theme: 'dark',
+  });
+};
