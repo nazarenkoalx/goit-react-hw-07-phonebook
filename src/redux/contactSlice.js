@@ -1,4 +1,4 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice, isAnyOf } from '@reduxjs/toolkit';
 import { fetchContacts, addContact, deleteContact } from './operations';
 
 const contactsInitialState = {
@@ -6,6 +6,11 @@ const contactsInitialState = {
   isLoading: false,
   error: null,
 };
+
+const declaredActions = [fetchContacts, addContact, deleteContact];
+
+const getAction = actionType =>
+  declaredActions.map(action => action[actionType]);
 
 const handlePending = state => {
   state.isLoading = true;
@@ -16,46 +21,32 @@ const handleFulfilled = state => {
   state.error = null;
 };
 
+const handleRejected = (state, payload) => {
+  state.isLoading = false;
+  state.error = payload;
+};
+
 export const contactsSlice = createSlice({
   name: 'contacts',
   initialState: contactsInitialState,
   extraReducers: builder =>
     builder
-      .addCase(fetchContacts.pending, state => {
-        handlePending(state);
-      })
       .addCase(fetchContacts.fulfilled, (state, { payload }) => {
         handleFulfilled(state);
         state.contactsArr = payload;
-      })
-      .addCase(fetchContacts.rejected, (state, { payload }) => {
-        state.isLoading = false;
-        state.error = payload;
-      })
-      .addCase(addContact.pending, state => {
-        handlePending(state);
       })
       .addCase(addContact.fulfilled, (state, { payload }) => {
         handleFulfilled(state);
         state.contactsArr.push(payload);
       })
-      .addCase(addContact.rejected, (state, { payload }) => {
-        state.isLoading = false;
-        state.error = payload;
-      })
-      .addCase(deleteContact.pending, state => {
-        handlePending(state);
-      })
       .addCase(deleteContact.fulfilled, (state, { payload }) => {
-        handleFulfilled(state);
         state.contactsArr = state.contactsArr.filter(
           contact => contact.id !== payload.id
         );
       })
-      .addCase(deleteContact.rejected, (state, { payload }) => {
-        state.isLoading = false;
-        state.error = payload;
-      }),
+      .addMatcher(isAnyOf(...getAction('pending')), handlePending)
+      .addMatcher(isAnyOf(...getAction('fulfilled')), handleFulfilled)
+      .addMatcher(isAnyOf(...getAction('rejected')), handleRejected),
 });
 
 export const { fetchingInProgress, fetchingSuccess, fetchingError } =
